@@ -124,6 +124,7 @@
     </Content>
     <Content Include="orderList.cshtml" />
     <Content Include="Home.cshtml" />
+    <Content Include="newOrder.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

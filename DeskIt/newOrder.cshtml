@@ -1,0 +1,88 @@
+﻿@{
+    Validation.RequireField("Customer", "You must enter a name");
+    Validation.RequireField("Width", "Width is required");
+    Validation.RequireField("Length", "You haven't entered a length");
+    Validation.RequireField("Drawer", "You need to enter in a number of drawers between 0 and 7");
+    Validation.RequireField("Material", "Choose a surface material");
+    Validation.RequireField("Rush", "You can only rush an order by 3, 5, or 7 days");
+    Validation.RequireField("dateSubmitted", "You need a date");
+
+    var db = Database.Open("deskMe");
+    var customer = "";
+    var width = "";
+    var length = "";
+    var drawer = "";
+    var material = "";
+    var rush = "";
+    var dateSubmitted = "";
+
+
+    if (IsPost && Validation.IsValid())
+    {
+        customer = Request.Form["customer"];
+        width = Request.Form["width"];
+        length = Request.Form["length"];
+        drawer = Request.Form["drawer"];
+        material = Request.Form["material"];
+        rush = Request.Form["rush"];
+        dateSubmitted = Request.Form["dateSubmitted"];
+        var insertCommand = "INSERT INTO Orders (Customer, Width, Length, Drawer, Material, Rush, dateSubmitted ) VALUES(@0, @1, @2, @3, @4, @5, @6)";
+        db.Execute(insertCommand, customer, width, length, drawer, material, rush, dateSubmitted);
+        Response.Redirect("~/verify");
+
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Order Below</title>
+</head>
+<body>
+    <h2>Customize your order</h2>
+    @Html.ValidationSummary()
+    <form method="post">
+        <fieldset>
+            <legend>Order Information</legend>
+            <p>
+                <label for="Customer" class="field">Name:</label>
+                <input type="text" name="customer" value="@Request.Form["Customer"]" />
+                @Html.ValidationMessage("customer")
+            </p>
+            <p>Please choose your measurements, the smallest table available is 1000 square inches. Other size is $5 per inch</p>
+            <p>
+                <label for="Width" class="field">Width in inches:</label>
+                <input type="text" name="width" value="@Request.Form["Width"]" />
+                @Html.ValidationMessage("width")
+            </p>
+
+            <p>
+                <label for="Length" class="field">Length in inches:</label>
+                <input type="text" name="length" value="@Request.Form["Length"]" />
+                @Html.ValidationMessage("length")
+            </p>
+
+            <p>
+                <label for="Drawer" class="field">Would you like drawers. Each drawer adds $25 to the desk total:</label>
+                <input type="text" name="drawer" value="@Request.Form["Drawer"]" />
+                @Html.ValidationMessage("drawer")
+            </p>
+            <p>
+                <label for="Material" class="field">We have 6 available desk materials. Walnut, Oak, Pine, Metal, Marble, and Laminate</label>
+                <input type="text" name="material" value="@Request.Form["Material"]" />
+                @Html.ValidationMessage("material")
+            </p>
+            <p>
+                <label for="Rush" class="field">You  can rush your order 3, 5, or 7 days. Otherwise it will be completed in 14 days.</label>
+            </p>
+            <p>
+                <label for="dateSubmitted" class="field">Submit Date:</label>
+                <input type="text" name="dateSubmitted" value="@Request.Form["dateSubmitted"]" />
+                @Html.ValidationMessage("dateSubmitted")
+            </p>
+
+            <p><input type="submit" name="buttonSubmit" value="Confirm Order" /></p>
+        </fieldset>
+    </form>
+</body>
+</html>
