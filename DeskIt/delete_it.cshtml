@@ -40,7 +40,7 @@
     if (IsPost && !Request["buttonDelete"].IsEmpty())
     {
         customerId = Request.Form["customerId"];
-        var db = Database.Open("deskMe");
+        var db = Database.Open("deskIt");
         var deleteCommand = "DELETE FROM Orders WHERE ID = @0";
         db.Execute(deleteCommand, customerId);
         Response.Redirect("~/orderList");
