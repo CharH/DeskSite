@@ -1,0 +1,58 @@
+﻿@{
+    var db = Database.Open("deskMe");
+    var selectCommand = "SELECT * FROM Orders";
+    var searchTerm = "";
+
+
+
+    if (!Request.QueryString["searchName"].IsEmpty())
+    {
+        selectCommand = "SELECT * FROM Orders WHERE Customer LIKE @0";
+        searchTerm = Request.QueryString["searchName"];
+    }
+   
+    var selectedData = db.Query(selectCommand, searchTerm);
+
+    var grid = new WebGrid(source: selectedData, defaultSort: "Customer", rowsPerPage: 10);
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mega Escritorio Order</title>
+</head>
+<body>
+    <header>
+        <h1>Mega Escritorio</h1>
+        <h2>Here is a collection of past customer orders.</h2>
+    </header>
+    <form method="get">
+        <div id="searcher">
+            <label for="SearchName">Customer Name:</label>
+            <input type="text" name="searchName" value="@Request.QueryString["searchName"]" />
+            <input type="Submit" value="Search Name" /><br />
+            (Leave blank to list all customers.)<br />
+        </div>
+    </form>
+    <section>
+        @grid.GetHtml(
+  tableStyle: "grid",
+  headerStyle: "Read",
+  alternatingRowStyle: "alt",
+  columns: grid.Columns(
+  grid.Column(format: @<a href="~/edit_form?id=@item.ID">Edit</a>),
+  grid.Column("Customer"),
+  grid.Column("dateSubmitted"),
+  grid.Column(format: @<a href="~/delete_it?id=@item.ID">Delete</a>)
+     )
+        )
+
+    </section>
+    <p id="linkMe">
+        <a href="~/add_order">Add an order</a><br />
+        <a href="~/all">View all desk orders</a>
+    </p>
+    <footer>
+        &copy Miller | Programs
+    </footer>
+</body>
+</html>
