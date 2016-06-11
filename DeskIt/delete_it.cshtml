@@ -1,0 +1,104 @@
+﻿@{
+    var customer = "";
+    var width = "";
+    var length = "";
+    var drawer = "";
+    var material = "";
+    var rush = "";
+    var dateSubmitted = "";
+    var customerId = "";
+
+    if (!IsPost)
+    {
+        if (!Request.QueryString["ID"].IsEmpty() && Request.QueryString["ID"].IsInt())
+        {
+            customerId = Request.QueryString["ID"];
+            var db = Database.Open("deskIt");
+            var dbCommand = "SELECT * FROM Orders WHERE ID = @0";
+            var row = db.QuerySingle(dbCommand, customerId);
+            if (row != null)
+            {
+                customer = row.Customer;
+                width = row.Width.ToString();
+                length = row.Length.ToString();
+                drawer = row.Drawer.ToString();
+                material = row.Material.ToString();
+                rush = row.Rush.ToString();
+                dateSubmitted = row.dateSubmitted.ToString();
+            }
+            else
+            {
+                Validation.AddFormError("No desk order was found for that ID.");
+            }
+        }
+        else
+        {
+            Validation.AddFormError("No desk order was found for that ID.");
+        }
+    }
+
+    if (IsPost && !Request["buttonDelete"].IsEmpty())
+    {
+        customerId = Request.Form["customerId"];
+        var db = Database.Open("deskMe");
+        var deleteCommand = "DELETE FROM Orders WHERE ID = @0";
+        db.Execute(deleteCommand, customerId);
+        Response.Redirect("~/orderList");
+    }
+}
+<html>
+<head>
+    <title>Delete a Order</title>
+    <link rel="stylesheet" type="text/css" href="~/layout.css" />
+</head>
+<body>
+    <h1>Delete a Order</h1>
+    @Html.ValidationSummary()
+    <p><a href="~/display">Return to customer order listing</a></p>
+
+    <form method="post">
+        <fieldset>
+            <legend>Order Information</legend>
+
+            <p>
+                <span>Customer Name:</span><br />
+                <span>@customer</span>
+            </p>
+
+            <p>
+                <span>Width in Inches:</span><br />
+                <span>@width</span>
+            </p>
+
+            <p>
+                <span>Length in Inches:</span><br />
+                <span>@length</span>
+            </p>
+
+            <p>
+                <span>Drawer Count:</span><br />
+                <span>@drawer</span>
+            </p>
+
+            <p>
+                <span>Material Type:</span><br />
+                <span>@material</span>
+            </p>
+
+            <p>
+                <span>Rush Days</span><br />
+                <span>@rush</span>
+            </p>
+
+            <p>
+                <span>dateSubmitted:</span><br />
+                <span>@dateSubmitted</span>
+            </p>
+
+            <input type="hidden" name="customerid" value="@customerId" />
+            <p><input type="submit" name="buttonDelete" value="Delete Customer Order" /></p>
+        </fieldset>
+        <p><a href="~/orderList">Return to desk order listing</a></p>
+    </form>
+</body>
+</html>

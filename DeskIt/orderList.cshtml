@@ -1,5 +1,5 @@
 ﻿@{
-    var db = Database.Open("deskMe");
+    var db = Database.Open("deskIt");
     var selectCommand = "SELECT * FROM Orders";
     var searchTerm = "";
 
@@ -50,7 +50,8 @@
     </section>
     <p id="linkMe">
         <a href="~/newOrder">Add an order</a><br />
-        <a href="~/orderList">View all desk orders</a>
+        <a href="~/orderList">View all desk orders</a><br />
+        <a href="/home">Home</a>
     </p>
     <footer>
         &copy Miller | Programs

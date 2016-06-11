@@ -7,7 +7,7 @@
     Validation.RequireField("Rush", "You can only rush an order by 3, 5, or 7 days");
     Validation.RequireField("dateSubmitted", "You need a date");
 
-    var db = Database.Open("deskMe");
+    var db = Database.Open("deskIt");
     var customer = "";
     var width = "";
     var length = "";
@@ -28,7 +28,7 @@
         dateSubmitted = Request.Form["dateSubmitted"];
         var insertCommand = "INSERT INTO Orders (Customer, Width, Length, Drawer, Material, Rush, dateSubmitted ) VALUES(@0, @1, @2, @3, @4, @5, @6)";
         db.Execute(insertCommand, customer, width, length, drawer, material, rush, dateSubmitted);
-        Response.Redirect("~/verify");
+        Response.Redirect("~/orderList");
 
     }
 }
@@ -46,38 +46,43 @@
         <fieldset>
             <legend>Order Information</legend>
             <p>
-                <label for="Customer" class="field">Name:</label>
+                <label for="Customer" class="field">Name:</label><br />
                 <input type="text" name="customer" value="@Request.Form["Customer"]" />
                 @Html.ValidationMessage("customer")
             </p>
             <p>Please choose your measurements, the smallest table available is 1000 square inches. Other size is $5 per inch</p>
             <p>
-                <label for="Width" class="field">Width in inches:</label>
+                <label for="Width" class="field">Width:</label><br />
                 <input type="text" name="width" value="@Request.Form["Width"]" />
                 @Html.ValidationMessage("width")
             </p>
 
             <p>
-                <label for="Length" class="field">Length in inches:</label>
+                <label for="Length" class="field">Length:</label><br />
                 <input type="text" name="length" value="@Request.Form["Length"]" />
                 @Html.ValidationMessage("length")
             </p>
+            <p>Would you like any drawers? Each drawer adds $25 to the desk total</p>
 
             <p>
-                <label for="Drawer" class="field">Would you like drawers. Each drawer adds $25 to the desk total:</label>
+                <label for="Drawer" class="field">Drawer Count:</label> <br /><br />
                 <input type="text" name="drawer" value="@Request.Form["Drawer"]" />
                 @Html.ValidationMessage("drawer")
             </p>
+            <p>We have 6 available desk materials. You can choose between walnut, oak, pine, metal, marble, and laminate</p>
             <p>
-                <label for="Material" class="field">We have 6 available desk materials. Walnut, Oak, Pine, Metal, Marble, and Laminate</label>
+                <label for="Material" class="field">Material</label><br />
                 <input type="text" name="material" value="@Request.Form["Material"]" />
                 @Html.ValidationMessage("material")
             </p>
+            <p>You can rush your desk order by 3, 5, or 7 days. Otherwise it will be take 14 days</p>
             <p>
-                <label for="Rush" class="field">You  can rush your order 3, 5, or 7 days. Otherwise it will be completed in 14 days.</label>
+                <label for="Rush" class="field">Rush Days</label><br />
+                <input type="text" name="rush" value="@Request.Form["Rush"]" />
+                @Html.ValidationMessage("rush")
             </p>
             <p>
-                <label for="dateSubmitted" class="field">Submit Date:</label>
+                <label for="dateSubmitted" class="field">Submit Date:</label><br />
                 <input type="text" name="dateSubmitted" value="@Request.Form["dateSubmitted"]" />
                 @Html.ValidationMessage("dateSubmitted")
             </p>
@@ -85,5 +90,6 @@
             <p><input type="submit" name="buttonSubmit" value="Confirm Order" /></p>
         </fieldset>
     </form>
+    <a href="/orderList">View Customer Orders</a>
 </body>
 </html>

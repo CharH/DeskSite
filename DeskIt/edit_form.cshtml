@@ -1,0 +1,124 @@
+﻿@{
+    var customer = "";
+    var width = "";
+    var length = "";
+    var drawer = "";
+    var material = "";
+    var rush = "";
+    var dateSubmitted = "";
+    var customerId = "";
+
+    if (!IsPost)
+    {
+        if (!Request.QueryString["ID"].IsEmpty() && Request.QueryString["ID"].IsInt())
+        {
+            customerId = Request.QueryString["ID"];
+            var db = Database.Open("deskIt");
+            var dbCommand = "SELECT * FROM Orders WHERE ID = @0";
+            var row = db.QuerySingle(dbCommand, customerId);
+
+            if (row != null)
+            {
+                customer = row.Customer;
+                width = row.Width.ToString();
+                length = row.Length.ToString();
+                drawer = row.Drawer.ToString();
+                material = row.Material;
+                rush = row.Rush.ToString();
+                dateSubmitted = row.dateSubmitted.ToString();
+            }
+            else
+            {
+                Validation.AddFormError("No customer order was selected.");
+            }
+        }
+        else
+        {
+            Validation.AddFormError("No customer order was selected.");
+        }
+    }
+
+    if (IsPost)
+    {
+        Validation.RequireField("customer", "You must enter a name");
+        Validation.RequireField("width", "Width is required");
+        Validation.RequireField("length", "You haven't entered a length");
+        Validation.RequireField("drawer", "Please provide a drawer count between 0 and 7.");
+        Validation.RequireField("material", "Please choose an existing surface material");
+        Validation.RequireField("rush", "You must choose a rush option");
+        Validation.RequireField("dateSubmitted", "Enter a submit date");
+        Validation.RequireField("customerid", "No customer ID was submitted!");
+
+        customer = Request.Form["customer"];
+        width = Request.Form["width"];
+        length = Request.Form["length"];
+        drawer = Request.Form["drawer"];
+        material = Request.Form["material"];
+        rush = Request.Form["rush"];
+        dateSubmitted = Request.Form["dateSubmitted"];
+        customerId = Request.Form["customerId"];
+
+        if (Validation.IsValid())
+        {
+            var db = Database.Open("deskIt");
+            var updateCommand = "UPDATE Orders SET Customer=@0, Width=@1, Length=@2, Drawer=@3, Material=@4, Rush=@5, dateSubmitted=@6 WHERE Id=@7";
+            db.Execute(updateCommand, customer, width, length, drawer, material, rush, dateSubmitted, customerId);
+            Response.Redirect("~/orderList");
+        }
+    }
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Edit Order</title>
+    <link rel="stylesheet" type="text/css" href="~/layout.css" />
+</head>
+
+<body>
+    <h1>Edit this order</h1>
+    @Html.ValidationSummary()
+    <form method="post">
+        <fieldset>
+            <legend>Order Information</legend>
+
+            <p>
+                <label for="customer">Customer Name:</label><br />
+                <input type="text" name="customer" value="@customer" />
+            </p>
+
+            <p>
+                <label for="width">Width in Inches:</label><br />
+                <input type="text" name="width" value="@width" />
+            </p>
+            <label for="length">Length in Inches:</label><br />
+            <input type="text" name="length" value="@length" />
+            </p>
+            <label for="drawer">Drawer Count:</label><br />
+            <input type="text" name="drawer" value="@drawer" />
+            </p>
+
+            <p>
+                <label for="material">Material Type:</label><br />
+                <input type="text" name="material" value="@material" />
+            </p>
+
+            <p>
+                <label for="rush">Rush Days:</label><br />
+                <input type="text" name="rush" value="@rush" />
+            </p>
+
+            <p>
+                <label for="dateSubmitted">Submit Date:</label><br />
+                <input type="text" name="dateSubmitted" value="@dateSubmitted" />
+            </p>
+
+            <input type="hidden" name="customerid" value="@customerId" />
+
+            <p><input type="submit" name="buttonSubmit" value="Submit Changes" /></p>
+        </fieldset>
+    </form>
+    <p><a href="~/orderList">Return to desk order listing</a></p>
+</body>
+</html>

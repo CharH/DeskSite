@@ -126,6 +126,8 @@
     <Content Include="orderList.cshtml" />
     <Content Include="Home.cshtml" />
     <Content Include="newOrder.cshtml" />
+    <Content Include="delete_it.cshtml" />
+    <Content Include="edit_form.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
