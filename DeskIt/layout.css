@@ -1,0 +1,71 @@
+﻿        h1 {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin-left: 325px;
+        }
+        h2 {color: white; margin-left: 200px;}
+
+
+        .grid {
+            margin-left: 200px;
+            border-collapse: collapse;
+            width: 600px;
+            background-color: #adebad;
+        }
+
+            .grid th, .grid td {
+                border: 1px solid #C0C0C0;
+                padding: 5px;
+            }
+
+        .head {
+            background-color: #E8E8E8;
+            font-weight: bold;
+            color: #FFF;
+        }
+
+        .alt {
+            background-color: azure;
+            color: #000;
+        }
+
+        body {
+            background-color: #009999;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        #searcher {
+            margin-left: 200px;
+            color: white;
+                   }
+        #booker {
+            margin-left: 200px; color: white;}
+
+        footer {margin-left: 200px; color: white;}
+
+        form {color: white;}
+
+            form.input {margin-left: 24px;}
+
+label.field {
+    text-align: left;
+    width: 100px;
+    float: left;
+    font-size: 16px;
+}
+
+            #linkMe {margin-left: 200px;}
+                    
+        /* Style the validations*/
+        .field-validation-error {
+            font-weight: bold;
+            color: red;
+            background-color: black;
+        }
+
+        .validation-summary-errors {
+            border: 2px dashed red;
+            color: red;
+            background-color: black;
+            font-weight: bold;
+            margin: 12px;
+        }
