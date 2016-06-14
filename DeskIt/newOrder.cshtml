@@ -35,49 +35,67 @@
 
 <header>
     
-    <h2>Order Below</h2>
+    <h2>Customize your order</h2>
     
 </header>
 <section>
-    <h2>Customize your order</h2>
+    
     @Html.ValidationSummary()
     <form method="post">
         <fieldset>
             <legend>Order Information</legend>
             <p>
-                <label for="Customer" class="field">Name:</label><br />
-                <input type="text" name="customer" value="@Request.Form["Customer"]" />
+                <label for="Customer" class="field">Order Name:</label><br />
+                <input type="text" name="customer" placeholder="Ex. Corner Office Desk"value="@Request.Form["Customer"]" />
                 @Html.ValidationMessage("customer")
             </p>
-            <p>Please choose your measurements, the smallest table available is 1000 square inches. Other size is $5 per inch</p>
+            <h4>Please choose your measurements. </h4>
+            <p>The base desk price of $$$ allows up to 1000 square inches in surface area. An extra $5 per inch is charged after that point.</p>
             <p>
-                <label for="Width" class="field">Width:</label><br />
-                <input type="text" name="width" value="@Request.Form["Width"]" />
+                <label for="Width" class="field">Desired Width:</label>
+                <input type="text" name="width" value="@Request.Form["Width"]" /> (inches)
                 @Html.ValidationMessage("width")
             </p>
 
             <p>
-                <label for="Length" class="field">Length:</label><br />
-                <input type="text" name="length" value="@Request.Form["Length"]" />
+                <label for="Length" class="field">Desired Length:</label>
+                <input type="text" name="length" placeholder=""value="@Request.Form["Length"]" /> (inches)
                 @Html.ValidationMessage("length")
             </p>
-            <p>Would you like any drawers? Each drawer adds $25 to the desk total</p>
-
             <p>
-                <label for="Drawer" class="field">Drawer Count:</label> <br /><br />
-                <input type="text" name="drawer" value="@Request.Form["Drawer"]" />
+                <label for="Drawer" class="field">Drawer Count:</label>
+                <select name="drawer" value="@Request.Form["Drawer"]">
+                    <option value="0">No Drawers</option>
+                    <option value="1">1 Drawer ($25)</option>
+                    <option value="2">2 Drawers ($50)</option>
+                    <option value="3">3 Drawers ($75)</option>
+                    <option value="4">4 Drawers ($100)</option>
+                    <option value="5">5 Drawers ($125)</option>
+                    <option value="6">6 Drawers ($150)</option> 
+                    <option value="7">7 Drawers ($175)</option>   
+                </select>
                 @Html.ValidationMessage("drawer")
             </p>
-            <p>We have 6 available desk materials. You can choose between walnut, oak, pine, metal, marble, and laminate</p>
             <p>
-                <label for="Material" class="field">Material</label><br />
-                <input type="text" name="material" value="@Request.Form["Material"]" />
+                <label for="Material" class="field">Desk Material:</label>
+                <select name="material" value="@Request.Form["Material"]">
+                    <option value="walnut">Walnut</option>
+                    <option value="oak">Oak</option>
+                    <option value="pine">Pine</option>
+                    <option value="metal">Metal</option>
+                    <option value="marble">Marble</option>
+                    <option value="laminate">Laminate</option>
+                </select>
                 @Html.ValidationMessage("material")
             </p>
-            <p>You can rush your desk order by 3, 5, or 7 days. Otherwise it will be take 14 days</p>
             <p>
-                <label for="Rush" class="field">Rush Days</label><br />
-                <input type="text" name="rush" value="@Request.Form["Rush"]" />
+                <label for="Rush" class="field">I want my order to arrive:</label>
+                <select name="rush" value="@Request.Form["Rush"]">
+                    <option value="3">Super fast! (3 Day Rush)</option>
+                    <option value="5">Fast! (5 Day Rush)</option>
+                    <option value="7">Soon (7 Day Rush)</option>
+                    <option value="0">No Rush (14 Days)</option>
+                </select>
                 @Html.ValidationMessage("rush")
             </p>
 
