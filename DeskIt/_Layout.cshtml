@@ -1,0 +1,83 @@
+﻿@{
+    var username = "";
+    var password = "";
+    var errorMessage = "";
+
+    if (IsPost)
+    {
+        username = Request.Form["username"];
+        password = Request.Form["password"];
+        if (WebSecurity.Login(username, password, true))
+        {
+            <script type="text/javascript">
+                alert = "Thank you for logging in.";
+            </script>
+            Response.Redirect("~/orderList");
+        }
+        else
+        {
+            errorMessage = "Login was not successful.";
+            <script type="text/javascript">
+                alert = @errorMessage;
+            </script>
+
+        }
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mega Escritorio</title>
+    <link href="~/Styles/Escritorio.css" rel="stylesheet" type="text/css" />
+    
+</head>
+<body>
+    <div class="container">
+        <div id="header" class="flex-row">
+            <div id="companyName" class="flex-item"><h1><a href="~/Home.cshtml" class="noStyle">Mega Escritorio</a></h1></div>
+            <div id="userInfo" class="flex-item">
+                @{
+                    switch (WebSecurity.IsAuthenticated)
+                    {
+                        case true:
+                            <div id="loginForms">
+                                Hello, @WebSecurity.CurrentUserName
+                            </div>
+                            <div id="loginLinks">
+                                <a href="~/Logout">Logout</a>
+                            </div>
+                            break;
+                        case false:
+                            <div id="loginForms">
+                                <form method="POST">
+                                    <input type="text" tabindex="1" name="username" id="username" placeholder="Username" value="" />
+                                    <input checked="checked" name="remember" type="checkbox" value="1"> Remember Me
+                                    <br />
+                                    <input type="password" tabindex="2" name="password" id="password" placeholder="Password" value="">
+                                    <input secure="secure" type="submit" value="Login">
+                                </form>
+                            </div>
+                            <div id="loginLinks">
+                                <a href="~/Register">Create an Account</a>
+                            </div>
+                            break;
+
+                    }
+                }
+            </div>
+        </div>
+        <div id="main">
+            <div>@RenderBody()</div>
+
+        </div>
+
+    </div>
+        <div id="footer">
+            &copy; @DateTime.Now.Year Mega Escritorio
+        </div>
+        
+    
+</body>
+</html>
+
+

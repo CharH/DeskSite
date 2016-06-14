@@ -1,11 +1,12 @@
 ﻿@{
+    Layout = "~/_Layout.cshtml";
+
     Validation.RequireField("Customer", "You must enter a name");
     Validation.RequireField("Width", "Width is required");
     Validation.RequireField("Length", "You haven't entered a length");
     Validation.RequireField("Drawer", "You need to enter in a number of drawers between 0 and 7");
     Validation.RequireField("Material", "Choose a surface material");
     Validation.RequireField("Rush", "You can only rush an order by 3, 5, or 7 days");
-    Validation.RequireField("dateSubmitted", "You need a date");
 
     var db = Database.Open("deskIt");
     var customer = "";
@@ -14,7 +15,7 @@
     var drawer = "";
     var material = "";
     var rush = "";
-    var dateSubmitted = "";
+    var dateSubmitted = DateTime.Now.Date;
 
 
     if (IsPost && Validation.IsValid())
@@ -25,21 +26,19 @@
         drawer = Request.Form["drawer"];
         material = Request.Form["material"];
         rush = Request.Form["rush"];
-        dateSubmitted = Request.Form["dateSubmitted"];
         var insertCommand = "INSERT INTO Orders (Customer, Width, Length, Drawer, Material, Rush, dateSubmitted ) VALUES(@0, @1, @2, @3, @4, @5, @6)";
         db.Execute(insertCommand, customer, width, length, drawer, material, rush, dateSubmitted);
         Response.Redirect("~/orderList");
 
     }
 }
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>Order Below</title>
-    <link rel="stylesheet" type="text/css" href="~/layout.css" />
-</head>
-<body>
+
+<header>
+    
+    <h2>Order Below</h2>
+    
+</header>
+<section>
     <h2>Customize your order</h2>
     @Html.ValidationSummary()
     <form method="post">
@@ -81,15 +80,9 @@
                 <input type="text" name="rush" value="@Request.Form["Rush"]" />
                 @Html.ValidationMessage("rush")
             </p>
-            <p>
-                <label for="dateSubmitted" class="field">Submit Date:</label><br />
-                <input type="text" name="dateSubmitted" value="@Request.Form["dateSubmitted"]" />
-                @Html.ValidationMessage("dateSubmitted")
-            </p>
 
             <p><input type="submit" name="buttonSubmit" value="Confirm Order" /></p>
         </fieldset>
     </form>
     <a href="/orderList">View Customer Orders</a>
-</body>
-</html>
+</section>

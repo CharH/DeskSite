@@ -1,0 +1,97 @@
+﻿html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+body{
+    height:100%;
+    width:100%;
+    margin-left:10%;
+    margin-right:10%;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size:10pt;
+    background-image:url("wood_texture_by_daydreamsphotography.jpg");
+    background-size:100%100%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color:white;
+    line-height:1.6em;
+}
+
+
+h1{font-size:1.6em;}
+h2{font-size:1.4em;}
+
+
+#container{
+    min-height:100%;
+    position:relative;
+    left:10%;
+}
+#header{
+    padding:8px;
+    width:80%;
+    background-color:#25282f;
+    color:white;
+}
+#main{
+    width:80%;
+    padding:8px;
+    padding-bottom:4em;
+    background-color:white;
+}
+#footer{
+    width:80%;
+    height:2em;
+    padding:8px;
+    margin-top:-2em;
+    background-color:#25282f;
+    text-align:center;
+    color:deepskyblue;
+
+}
+
+
+.grid th, .grid td { border:1px solid #977d56; padding:5px; position:center;}
+.head { background-color:#9d9643; font-weight:normal; color:#fff; }
+.alt { background-color:#dae294; color: #000;}
+.foot {text-align:center;}
+.selected{background-color:yellow;}
+span.caption{width:100px;}
+span.dataDisplay{font-weight:bold}
+
+.field-validation-error{
+            font-weight:bold;
+            color:red;
+            background-color:yellow;
+        }
+.validation-summary-errors {
+    border: 2px dashed red;
+    color: red;
+    background-color: yellow;
+    font-weight: bold;
+    margin: 12px;
+}
+.flex-row{
+    display:flex;
+    flex-direction:row;
+    justify-content:space-between;
+}
+textarea{
+    vertical-align:top;
+}
+label{
+    display:block;
+}
+a{
+    color:deepskyblue;
+    text-decoration:none;
+}
+a.noStyle{
+    color:white;
+    text-decoration:none;
+    cursor:pointer;
+}
+
+

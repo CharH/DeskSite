@@ -1,4 +1,6 @@
 ﻿@{
+    Layout = "~/_Layout.cshtml";
+
     var db = Database.Open("deskIt");
     var selectCommand = "SELECT * FROM Orders";
     var searchTerm = "";
@@ -10,7 +12,7 @@
         selectCommand = "SELECT * FROM Orders WHERE Customer LIKE @0";
         searchTerm = Request.QueryString["searchName"];
     }
-   
+
     var selectedData = db.Query(selectCommand, searchTerm);
 
     var grid = new WebGrid(source: selectedData, defaultSort: "Customer", rowsPerPage: 10);

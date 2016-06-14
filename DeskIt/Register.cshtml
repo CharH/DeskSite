@@ -1,0 +1,102 @@
+﻿@{ 
+    Layout = "~/_Layout.cshtml";
+
+    Validation.RequireField("username", "Please enter a username.");
+    Validation.RequireField("password", "Please enter a password.");
+    Validation.RequireField("firstname", "Please enter a first name.");
+    Validation.RequireField("lastname", "Please enter a last name.");
+    Validation.RequireField("confirmPassword", "Please confirm your password.");
+    Validation.Add("confirmPassword", Validator.EqualsTo("password", "Passwords must match"));
+
+    var username = "";
+    var password = "";
+    var firstname = "";
+    var lastname = "";
+    var errorMessage = "";
+
+
+
+    if (IsPost && Validation.IsValid())
+    {
+        username = Request.Form["username"];
+        password = Request.Form["password"];
+        firstname = Request.Form["firstname"];
+        lastname = Request.Form["lastname"];
+
+        if (!IsPost)
+        {
+            if (WebSecurity.IsAuthenticated)
+            {
+                errorMessage = String.Format("You are already logged in. (User name: {0})", WebSecurity.CurrentUserName);
+            }
+        }
+
+        if (IsPost)
+        {
+            WebSecurity.Logout();
+
+            if (WebSecurity.UserExists(username))
+            {
+                errorMessage = String.Format("User '{0}' already exists. Please choose a different name.", username);
+            }
+            else
+            {
+                var db = Database.Open("deskIt");
+                var insertCommand = "INSERT INTO UserAccounts(Username, Password, FirstName, LastName) VALUES (@0, @1, @2, @3)";
+                WebSecurity.CreateUserAndAccount(username, password, null, false);
+                WebSecurity.Login(username, password, true);
+                db.Execute(insertCommand, username, password, firstname, lastname);
+                errorMessage = String.Format("{0} created.", username);
+            }
+
+        }
+        Response.Redirect("~/Home");
+
+    }
+}
+<header>
+    <h2>Register an Account</h2>
+</header>
+<section>
+    @Html.ValidationSummary()
+    <form method="post">
+        <p>
+            @if (errorMessage != "")
+            {
+                <span class="errorMessage">@Html.Raw(errorMessage)</span>
+            }
+        </p>
+        <fieldset>
+            <legend>Register a New Account</legend>
+            <p>
+                <label for="username">Username:</label>
+                <input type="text" name="username" value="@Request.Form["username"]" />
+                @Html.ValidationMessage("username")
+            </p>
+            <p>
+                <label for="firstname">First Name:</label>
+                <input type="text" name="firstname" value="@Request.Form["firstname"]" />
+                @Html.ValidationMessage("firstname")
+            </p>
+            <p>
+                <label for="lastname">Last Name:</label>
+                <input type="text" name="lastname" value="@Request.Form["lastname"]" />
+                @Html.ValidationMessage("lastname")
+            </p>
+            <p>
+                <label for="password">Password:</label>
+                <input type="password" name="password" value="" />
+                @Html.ValidationMessage("password")
+            </p>
+            <p>
+                <label for="confirmPassword">Confirm Password:</label>
+                <input type="password" name="confirmPassword" value="" />
+                @Html.ValidationMessage("confirmPassword")
+            </p>
+            <p><input type="submit" name="buttonSubmit" value="Create New Account" /></p>
+        </fieldset>
+    </form>
+    <p>
+        <input type="button" onclick="location.href = 'Home';" value="Return to Home Page" />
+    </p>
+</section>
