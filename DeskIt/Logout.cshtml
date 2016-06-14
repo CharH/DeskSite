@@ -1,14 +1,26 @@
 ﻿
 @{
     Layout = "~/_Layout.cshtml";
+    var message = "";
+    var message2 = "";
 
-    WebSecurity.Logout();
+    if (WebSecurity.IsAuthenticated)
+    {
+        WebSecurity.Logout();
+        message = "You are now logged out and will be returned to the home page shortly.";
+    }
+    else
+    {
+        message = "Whoops! Looks like you weren't logged in so you're already good to go!";
+        message2="You will be returned to the home page shortly.";
+    }
+    Response.AddHeader("REFRESH", "4;URL='Home'");
+
 }
 <header>
     <h2>Logout</h2>
 </header>
 <section>
-    <h1>Logout</h1>
-    <p>You are now logged out!</p>
-    <p><a href="@Href("~/Home")">Return to home page</a></p>
+    <p>@message</p>
+    <p>@message2</p>
 </section>
