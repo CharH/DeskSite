@@ -5,7 +5,7 @@
 
     if (IsPost)
     {
-        if (Request["button"].Equals("Login"))
+        if (Request.Form["login"] != null)
         {
             username = Request.Form["username"];
             password = Request.Form["password"];
@@ -58,7 +58,7 @@
                                     <input checked="checked" name="remember" type="checkbox" value="1"> Remember Me
                                     <br />
                                     <input type="password" tabindex="2" name="password" id="password" placeholder="Password" value="">
-                                    <button secure="secure" name="button" type="submit" value="Login">Login</button>
+                                    <input secure="secure" name="login" type="submit" value="Login"/>
                                 </form>
                             </div>
                             <div id="loginLinks">

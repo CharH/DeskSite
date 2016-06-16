@@ -119,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\deskIt.sdf" />
+    <Content Include="App_Data\rushOrderPrices.txt" />
     <Content Include="packages.config" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -131,6 +132,7 @@
     <Content Include="Register.cshtml" />
     <Content Include="Login.cshtml" />
     <Content Include="Logout.cshtml" />
+    <Content Include="App_Code\Functions.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
