@@ -2,18 +2,23 @@
     Layout = "~/_Layout.cshtml";
 
     var db = Database.Open("deskIt");
-    var selectCommand = "SELECT * FROM Orders";
+    var selectCommand = "SELECT * FROM Orders WHERE accountName = @0";
     var searchTerm = "";
+    var user = WebSecurity.CurrentUserName;
 
+    if (!WebSecurity.IsAuthenticated)
+    {
+        Response.Redirect("~/Login");
+    }
 
 
     if (!Request.QueryString["searchName"].IsEmpty())
     {
-        selectCommand = "SELECT * FROM Orders WHERE Customer LIKE @0";
-        searchTerm = Request.QueryString["searchName"];
+        selectCommand = "SELECT * FROM Orders WHERE accountName = @0 AND Customer LIKE @1 ";
+        searchTerm = "%" + Request.QueryString["searchName"] + "%";
     }
 
-    var selectedData = db.Query(selectCommand, searchTerm);
+    var selectedData = db.Query(selectCommand, user, searchTerm);
 
     var grid = new WebGrid(source: selectedData, defaultSort: "Customer", rowsPerPage: 10);
 }
@@ -30,10 +35,10 @@
     </header>
     <form method="get">
         <div id="searcher">
-            <label for="SearchName">Customer Name:</label>
+            <label for="SearchName">Order Name:</label>
             <input type="text" name="searchName" value="@Request.QueryString["searchName"]" />
             <input type="Submit" value="Search Name" /><br />
-            (Leave blank to list all customers.)<br />
+            (Leave blank to list all orders associated with this account.)<br />
         </div>
     </form>
     <section>

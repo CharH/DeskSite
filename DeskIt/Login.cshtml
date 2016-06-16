@@ -3,7 +3,9 @@
 
     var username = "";
     var password = "";
-    var errorMessage = "";
+    var message = "";
+
+
 
     if (IsPost)
     {
@@ -11,48 +13,50 @@
         password = Request["password"];
         if (WebSecurity.Login(username, password, true))
         {
-            Response.Redirect("~/Home");
+            message = "Thank you for logging in. You will be redirected to the home page in a moment";
+            Response.AddHeader("REFRESH", "3;URL='Home'");
         }
         else
         {
-            errorMessage = "Login was not successful.";
+            message = "Login was not successful. Maybe you should create an account first?";
         }
     }
 }
 <header>
-    <h2>Login</h2>
+    <h1>Login</h1>
 </header>
 <section>
-    <h1>Login</h1>
     <form method="post">
-        @if (WebSecurity.IsAuthenticated)
-        {
-            <p>
-                You are currently logged in as @WebSecurity.CurrentUserName.
-                <a href="@Href("~/Logout")">Log out</a>
-            </p>
-        }
         <p>
-            <label for="username">Username:</label><br />
-            <input type="text" name="username" id="username" value="" />
-        </p>
-        <p>
-            <label for="password">Password:</label><br />
-            <input type="password" name="password" id="password" value="" />
-        </p>
-        <p>
-            <input type="submit" value="Submit" />
-        </p>
+            @if (WebSecurity.IsAuthenticated && !IsPost)
+            {
+                <span>You are currently logged in as @WebSecurity.CurrentUserName.
+                    <a href="@Href("~/Logout")">Log out</a></span>
 
-        <p>No user name? <a href="@Href("~/Register")">Register</a></p>
+            }
+            @if (message != "")
+            {
+                <span class="errorMessage">@Html.Raw(message)</span>
+            }
+            Please login before placing or reviewing an order. 
+            <br />No account? No problem! You can <a href="@Href("~/Register")">register a new account</a> today.
+</p>
+        <fieldset>
+            <legend>Login</legend>
+            <p>
+                <label for="username">Username:</label><br />
+                <input type="text" name="username" id="username" value="" />
+            </p>
+            <p>
+                <label for="password">Password:</label><br />
+                <input type="password" name="password" id="password" value="" />
+            </p>
+            <p>
+                <input type="submit" value="Submit" />
+            </p>
+        </fieldset>
         <p><a href="@Href("~/Home")">Return to home page</a></p>
 
     </form>
-    <p>
-        @if (errorMessage != "")
-        {
-            <span class="errorMessage">@errorMessage</span>
-        }
-    </p>
+    
 </section>
-</html>

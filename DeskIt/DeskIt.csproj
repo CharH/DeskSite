@@ -140,6 +140,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <Content Include="Styles\Escritorio.css" />
+    <Content Include="Styles\EX45672.jpg" />
     <Content Include="Styles\wood_texture_by_daydreamsphotography.jpg" />
     <Content Include="_AppStart.cshtml" />
     <Content Include="_Layout.cshtml" />

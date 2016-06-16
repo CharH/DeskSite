@@ -20,7 +20,7 @@ body{
 }
 
 
-h1{font-size:1.6em;}
+h1{font-size:2em;}
 h2{font-size:1.4em;}
 
 
@@ -40,6 +40,7 @@ h2{font-size:1.4em;}
     padding:8px;
     padding-bottom:4em;
     background-color:white;
+    overflow:auto;
 }
 #footer{
     width:80%;
@@ -49,6 +50,7 @@ h2{font-size:1.4em;}
     background-color:#25282f;
     text-align:center;
     color:deepskyblue;
+    clear:both;
 
 }
 
@@ -107,9 +109,14 @@ display: inline-block;
 .message{
     font-size:1.4em;
     color:darkgreen;
+    background-color:#e9eca8;
 }
 .hide{
     display:none;
 }
+.blockText{
+    margin-left:5%;
+}
+
 
 

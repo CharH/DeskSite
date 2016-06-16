@@ -15,7 +15,9 @@
     var drawer="";
     var material = "";
     var rush = "";
+    var notes = "";
     var dateSubmitted = DateTime.Now.Date;
+    var user = WebSecurity.CurrentUserName;
 
     var deskEstimate = "";
     var drawerEstimate="";
@@ -25,6 +27,11 @@
     var orderMessage = "";
     var visibility = "hide";
 
+    if (!WebSecurity.IsAuthenticated)
+    {
+        Response.Redirect("~/Login");
+    }
+
     if (IsPost && Validation.IsValid())
     {
         customer = Request.Form["customer"];
@@ -33,6 +40,7 @@
         drawer = Request.Form["drawer"];
         material = Request.Form["material"];
         rush = Request.Form["rush"];
+        notes = Request.Form["orderNotes"];
 
 
         if (Request.Form["getEstimate"] != null)
@@ -47,10 +55,10 @@
         }
         if (Request.Form["confirmOrder"] != null)
         {
-            var insertCommand = "INSERT INTO Orders (Customer, Width, Length, Drawer, Material, Rush, dateSubmitted ) VALUES(@0, @1, @2, @3, @4, @5, @6)";
-            db.Execute(insertCommand, customer, width, length, drawer, material, rush, dateSubmitted);
+            var insertCommand = "INSERT INTO Orders (Customer, Width, Length, Drawer, Material, Rush, dateSubmitted, accountName, OrderNotes) VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8)";
+            db.Execute(insertCommand, customer, width, length, drawer, material, rush, dateSubmitted, user, notes);
             orderMessage = "Your order for " + customer + " has been placed.";
-            Response.AddHeader("REFRESH", "4;URL='orderList'");
+            Response.AddHeader("REFRESH", "3;URL='orderList'");
         }
 
 
@@ -122,6 +130,10 @@
                         <option value="14">No Rush (14 Days)</option>
                     </select>
                     @Html.ValidationMessage("rush")
+                </p>
+                <p>
+                    <label for="orderNotes" class="field">Special Notes:</label>
+                    <textarea name="orderNotes" value="@Request.Form["orderNotes"]"></textarea>
                 </p>
 
                 <p><input type="submit" name="getEstimate" value="Get Estimate"/></p>
