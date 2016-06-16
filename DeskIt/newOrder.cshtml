@@ -10,38 +10,40 @@
 
     var db = Database.Open("deskIt");
     var customer = "";
-    int width;
-    int length;
-    int drawer;
+    var width="";
+    var length="";
+    var drawer="";
     var material = "";
-    int rush;
+    var rush = "";
     var dateSubmitted = DateTime.Now.Date;
 
     var deskEstimate = "";
-    int drawerEstimate;
-    int areaEstimate;
-    int materialEstimate;
-    int rushEstimate;
+    var drawerEstimate="";
+    var areaEstimate="";
+    var materialEstimate="";
+    var rushEstimate="";
     var orderMessage = "";
+    var visibility = "hide";
 
     if (IsPost && Validation.IsValid())
     {
         customer = Request.Form["customer"];
-        width = int.Parse(Request.Form["width"]);
-        length = int.Parse(Request.Form["length"]);
-        drawer = int.Parse(Request.Form["drawer"]);
+        width = Request.Form["width"];
+        length = Request.Form["length"];
+        drawer = Request.Form["drawer"];
         material = Request.Form["material"];
-        rush = int.Parse(Request.Form["rush"]);
+        rush = Request.Form["rush"];
 
 
         if (Request.Form["getEstimate"] != null)
         {
-            var estimatedPrice = Functions.CalcTotalCost(width, length, drawer, material, rush);
-            deskEstimate = "The quote for your customized desk comes to: $" + estimatedPrice;
-            drawerEstimate = Functions.CalcDrawerCost(drawer);
-            areaEstimate = Functions.CalcAreaCost(width, length);
-            materialEstimate = Functions.CalcMaterialCost(material);
-            rushEstimate = Functions.CalcRushOrderCost(width, length, rush);
+            deskEstimate = Functions.CalcTotalCost(int.Parse(width), int.Parse(length), int.Parse(drawer), material, int.Parse(rush)).ToString();
+            drawerEstimate = Functions.CalcDrawerCost(int.Parse(drawer)).ToString();
+            areaEstimate = Functions.CalcAreaCost(int.Parse(width), int.Parse(length)).ToString();
+            materialEstimate = Functions.CalcMaterialCost(material).ToString();
+            rushEstimate = Functions.CalcRushOrderCost(int.Parse(width), int.Parse(length), int.Parse(rush)).ToString();
+            visibility = "";
+
         }
         if (Request.Form["confirmOrder"] != null)
         {
@@ -61,11 +63,10 @@
     
 </header>
 <section>
-    @orderMessage
-    @deskEstimate
+    <div class="message">@orderMessage</div>
     @Html.ValidationSummary()
-        <form method="post" id="mainBar">
-            <fieldset>
+        <form method="post">
+            <fieldset class="leftColumn">
                 <legend>Order Information</legend>
                 <p>
                     <label for="Customer" class="field">Order Name:</label><br />
@@ -118,19 +119,43 @@
                         <option value="3">Super fast! (3 Day Rush)</option>
                         <option value="5">Fast! (5 Day Rush)</option>
                         <option value="7">Soon (7 Day Rush)</option>
-                        <option value="0">No Rush (14 Days)</option>
+                        <option value="14">No Rush (14 Days)</option>
                     </select>
                     @Html.ValidationMessage("rush")
                 </p>
 
                 <p><input type="submit" name="getEstimate" value="Get Estimate"/></p>
             </fieldset>
-        </form>
-    
-        
-        <form method="post" id="pricingBar">
-        @deskEstimate
-        <input type="submit" name="confirmOrder" value="Confirm Order" />
+            <fieldset name="priceEstimate" class="rightColumn @visibility">
+                <legend>Estimated Cost</legend>
+                <table>
+                    <tr>
+                        <td>Order Name</td>
+                        <td>@customer</td>
+                    </tr>
+                    <tr>
+                        <td>Desk Size of @width" x @length"</td>
+                        <td>$@areaEstimate</td>
+                    </tr>
+                    <tr>
+                        <td>@drawer Drawers</td>
+                        <td>$@drawerEstimate</td>
+                    </tr>
+                    <tr>
+                        <td>@material Surface Material</td>
+                        <td>$@materialEstimate</td>
+                    </tr>
+                    <tr>
+                        <td>Expected Delivery in @rush days</td>
+                        <td>$@rushEstimate</td>
+                    </tr>
+                    <tr>
+                        <td>Total Cost</td>
+                        <td>$@deskEstimate</td>
+                    </tr>
+                </table>
+            <input type="submit" name="confirmOrder" value="Confirm Order" />
+            </fieldset>
         </form>
     
     <a href="/orderList">View Customer Orders</a>

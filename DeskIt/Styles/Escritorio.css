@@ -93,16 +93,23 @@ a.noStyle{
     text-decoration:none;
     cursor:pointer;
 }
-#mainBar{
+.leftColumn{
 display: inline-block;
             vertical-align: top;
             width: 60%;
             margin-right:5%;
 }
-#pricingBar{
+.rightColumn{
     display: inline-block;
             vertical-align: top;
             width: 35%;
+}
+.message{
+    font-size:1.4em;
+    color:darkgreen;
+}
+.hide{
+    display:none;
 }
 
 
