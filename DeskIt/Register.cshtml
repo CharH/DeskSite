@@ -1,4 +1,4 @@
-﻿@{ 
+﻿@{
     Layout = "~/_Layout.cshtml";
 
     Validation.RequireField("username", "Please enter a username.");
@@ -42,15 +42,23 @@
             else
             {
                 var db = Database.Open("deskIt");
-                var insertCommand = "INSERT INTO UserAccounts(Username, Password, FirstName, LastName) VALUES (@0, @1, @2, @3)";
-                WebSecurity.CreateUserAndAccount(username, password, null, false);
+                var insertCommand ="INSERT INTO UserAccounts(Username, Password, FirstName, LastName) VALUES (@0, @1, @2, @3)";
+                try
+                {
+                    WebSecurity.CreateUserAndAccount(username, password, null, false);
+                }
+                catch (Exception e)
+                {
+                    errorMessage = e.Message;
+                }
                 WebSecurity.Login(username, password, true);
                 db.Execute(insertCommand, username, password, firstname, lastname);
                 errorMessage = String.Format("{0} created.", username);
+                Response.Redirect("~/Home");
             }
 
         }
-        Response.Redirect("~/Home");
+
 
     }
 }

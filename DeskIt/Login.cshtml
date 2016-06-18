@@ -36,9 +36,9 @@
             }
             @if (message != "")
             {
-                <span class="errorMessage">@Html.Raw(message)</span>
+                <span class="message">@Html.Raw(message)</span>
             }
-            Please login before placing or reviewing an order. 
+            <br/>Please login before placing or reviewing an order. 
             <br />No account? No problem! You can <a href="@Href("~/Register")">register a new account</a> today.
 </p>
         <fieldset>

@@ -1,18 +1,23 @@
 ﻿@{
     Layout = "~/_Layout.cshtml";
 
-    Validation.RequireField("Customer", "You must enter a name");
-    Validation.RequireField("Width", "Width is required");
+    if (!WebSecurity.IsAuthenticated)
+    {
+        Response.Redirect("~/Login");
+    }
+
+    Validation.RequireField("Customer", "You must enter a name for the order.");
+    Validation.RequireField("Width", "You must enter a width.");
+    Validation.Add("Width", Validator.Integer("The width must be an integer"));
     Validation.RequireField("Length", "You haven't entered a length");
-    Validation.RequireField("Drawer", "You need to enter in a number of drawers between 0 and 7");
-    Validation.RequireField("Material", "Choose a surface material");
-    Validation.RequireField("Rush", "You can only rush an order by 3, 5, or 7 days");
+    Validation.Add("Length", Validator.Integer("The length must be an integer"));
+    Validation.RequireFields("Drawer", "Material", "Rush");
 
     var db = Database.Open("deskIt");
-    var customer = "";
-    var width="";
-    var length="";
-    var drawer="";
+    var customer = Request.Form["customer"];
+    var width = "";
+    var length = "";
+    var drawer = "";
     var material = "";
     var rush = "";
     var notes = "";
@@ -20,43 +25,121 @@
     var user = WebSecurity.CurrentUserName;
 
     var deskEstimate = "";
-    var drawerEstimate="";
-    var areaEstimate="";
-    var materialEstimate="";
-    var rushEstimate="";
+    var drawerEstimate = "";
+    var areaEstimate = "";
+    var materialEstimate = "";
+    var rushEstimate = "";
     var orderMessage = "";
-    var visibility = "hide";
 
-    if (!WebSecurity.IsAuthenticated)
+    var visibility = "hide";
+    var day14 = "";
+    var day3 = "";
+    var day5 = "";
+    var day7 = "";
+
+    var drawer0 = "";
+    var drawer1 = "";
+    var drawer2 = "";
+    var drawer3 = "";
+    var drawer4 = "";
+    var drawer5 = "";
+    var drawer6 = "";
+    var drawer7 = "";
+
+    var pine = "";
+    var oak = "";
+    var laminate = "";
+    var walnut = "";
+    var metal = "";
+    var marble = "";
+
+    switch (Request.Form["material"])
     {
-        Response.Redirect("~/Login");
+        case "Pine":
+            pine = "selected";
+            break;
+        case "Laminate":
+            laminate = "selected";
+            break;
+        case "Oak":
+            oak = "selected";
+            break;
+        case "Walnut":
+            walnut = "selected";
+            break;
+        case "Metal":
+            metal = "selected";
+            break;
+        case "Marble":
+            marble = "selected";
+            break;
+    }
+    switch (Request.Form["drawer"])
+    {
+        case "0":
+            drawer0 = "selected";
+            break;
+        case "1":
+            drawer1 = "selected";
+            break;
+        case "2":
+            drawer2 = "selected";
+            break;
+        case "3":
+            drawer3 = "selected";
+            break;
+        case "4":
+            drawer4 = "selected";
+            break;
+        case "5":
+            drawer5 = "selected";
+            break;
+        case "6":
+            drawer6 = "selected";
+            break;
+        case "7":
+            drawer7 = "selected";
+            break;
+    }
+    switch (Request.Form["rush"])
+    {
+        case "14":
+            day14 = "selected";
+            break;
+        case "3":
+            day3 = "selected";
+            break;
+        case "5":
+            day5 = "selected";
+            break;
+        case "7":
+            day7 = "selected";
+            break;
     }
 
     if (IsPost && Validation.IsValid())
     {
-        customer = Request.Form["customer"];
         width = Request.Form["width"];
         length = Request.Form["length"];
         drawer = Request.Form["drawer"];
         material = Request.Form["material"];
         rush = Request.Form["rush"];
         notes = Request.Form["orderNotes"];
-
+        deskEstimate = Functions.CalcTotalCost(int.Parse(width), int.Parse(length), int.Parse(drawer), material, int.Parse(rush)).ToString();
 
         if (Request.Form["getEstimate"] != null)
         {
-            deskEstimate = Functions.CalcTotalCost(int.Parse(width), int.Parse(length), int.Parse(drawer), material, int.Parse(rush)).ToString();
+
             drawerEstimate = Functions.CalcDrawerCost(int.Parse(drawer)).ToString();
             areaEstimate = Functions.CalcAreaCost(int.Parse(width), int.Parse(length)).ToString();
             materialEstimate = Functions.CalcMaterialCost(material).ToString();
             rushEstimate = Functions.CalcRushOrderCost(int.Parse(width), int.Parse(length), int.Parse(rush)).ToString();
             visibility = "";
-
         }
         if (Request.Form["confirmOrder"] != null)
         {
-            var insertCommand = "INSERT INTO Orders (Customer, Width, Length, Drawer, Material, Rush, dateSubmitted, accountName, OrderNotes) VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8)";
-            db.Execute(insertCommand, customer, width, length, drawer, material, rush, dateSubmitted, user, notes);
+            var insertCommand = "INSERT INTO Orders (Customer, Width, Length, Drawer, Material, Rush, dateSubmitted, accountName, OrderNotes, Price) VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8, @9)";
+            db.Execute(insertCommand, customer, width, length, drawer, material, rush, dateSubmitted, user, notes, deskEstimate);
             orderMessage = "Your order for " + customer + " has been placed.";
             Response.AddHeader("REFRESH", "3;URL='orderList'");
         }
@@ -66,109 +149,109 @@
 }
 
 <header>
-    
+
     <h2>Customize your order</h2>
-    
+
 </header>
 <section>
     <div class="message">@orderMessage</div>
     @Html.ValidationSummary()
-        <form method="post">
-            <fieldset class="leftColumn">
-                <legend>Order Information</legend>
-                <p>
-                    <label for="Customer" class="field">Order Name:</label><br />
-                    <input type="text" name="customer" placeholder="Ex. Corner Office Desk" value="@Request.Form["Customer"]" />
-                    @Html.ValidationMessage("customer")
-                </p>
-                <h4>Please choose your measurements. </h4>
-                <p>The base desk price of $$$ allows up to 1000 square inches in surface area. An extra $5 per inch is charged after that point.</p>
-                <p>
-                    <label for="Width" class="field">Desired Width:</label>
-                    <input type="text" name="width" value="@Request.Form["Width"]" /> (inches)
-                    @Html.ValidationMessage("width")
-                </p>
+    <form method="post">
+        <fieldset class="leftColumn">
+            <legend>Order Information</legend>
+            <p>
+                <label for="Customer" class="field">Order Name:</label><br />
+                <input type="text" name="customer" placeholder="Ex. Corner Office Desk" value="@Request.Form["Customer"]" />
+                @Html.ValidationMessage("customer")
+            </p>
+            <h4>Please choose your measurements. </h4>
+            <p>The base desk price of $$$ allows up to 1000 square inches in surface area. An extra $5 per inch is charged after that point.</p>
+            <p>
+                <label for="Width" class="field">Desired Width:</label>
+                <input type="text" name="width" value="@Request.Form["Width"]" /> (inches)
+                @Html.ValidationMessage("width")
+            </p>
 
-                <p>
-                    <label for="Length" class="field">Desired Length:</label>
-                    <input type="text" name="length" placeholder="" value="@Request.Form["Length"]" /> (inches)
-                    @Html.ValidationMessage("length")
-                </p>
-                <p>
-                    <label for="Drawer" class="field">Drawer Count:</label>
-                    <select name="drawer" value="@Request.Form["Drawer"]">
-                        <option value="0">No Drawers</option>
-                        <option value="1">1 Drawer ($25)</option>
-                        <option value="2">2 Drawers ($50)</option>
-                        <option value="3">3 Drawers ($75)</option>
-                        <option value="4">4 Drawers ($100)</option>
-                        <option value="5">5 Drawers ($125)</option>
-                        <option value="6">6 Drawers ($150)</option>
-                        <option value="7">7 Drawers ($175)</option>
-                    </select>
-                    @Html.ValidationMessage("drawer")
-                </p>
-                <p>
-                    <label for="Material" class="field">Desk Material:</label>
-                    <select name="material" value="@Request.Form["Material"]">
-                        <option value="Pine">Pine ($50)</option>
-                        <option value="Laminate">Laminate $100)</option>
-                        <option value="Oak">Oak ($200)</option>
-                        <option value="Walnut">Walnut ($250)</option>
-                        <option value="Metal">Metal ($300)</option>
-                        <option value="Marble">Marble ($500)</option>
+            <p>
+                <label for="Length" class="field">Desired Length:</label>
+                <input type="text" name="length" placeholder="" value="@Request.Form["Length"]" /> (inches)
+                @Html.ValidationMessage("length")
+            </p>
+            <p>
+                <label for="Drawer" class="field">Drawer Count:</label>
+                <select name="drawer" value="@Request.Form["Drawer"]">
+                    <option value="0" @drawer0>No Drawers</option>
+                    <option value="1" @drawer1>1 Drawer ($25)</option>
+                    <option value="2" @drawer2>2 Drawers ($50)</option>
+                    <option value="3" @drawer3>3 Drawers ($75)</option>
+                    <option value="4" @drawer4>4 Drawers ($100)</option>
+                    <option value="5" @drawer5>5 Drawers ($125)</option>
+                    <option value="6" @drawer6>6 Drawers ($150)</option>
+                    <option value="7" @drawer7>7 Drawers ($175)</option>
+                </select>
+                @Html.ValidationMessage("drawer")
+            </p>
+            <p>
+                <label for="Material" class="field">Desk Material:</label>
+                <select name="material" value="@Request.Form[" Material"]">
+                    <option value="Pine" @pine>Pine ($50)</option>
+                    <option value="Laminate" @laminate>Laminate $100)</option>
+                    <option value="Oak" @oak>Oak ($200)</option>
+                    <option value="Walnut" @walnut>Walnut ($250)</option>
+                    <option value="Metal" @metal>Metal ($300)</option>
+                    <option value="Marble" @marble>Marble ($500)</option>
 
-                    </select>
-                    @Html.ValidationMessage("material")
-                </p>
-                <p>
-                    <label for="Rush" class="field">I want my order to arrive:</label>
-                    <select name="rush" autofocus="@Request.Form["Rush"]">
-                        <option value="3">Super fast! (3 Day Rush)</option>
-                        <option value="5">Fast! (5 Day Rush)</option>
-                        <option value="7">Soon (7 Day Rush)</option>
-                        <option value="14">No Rush (14 Days)</option>
-                    </select>
-                    @Html.ValidationMessage("rush")
-                </p>
-                <p>
-                    <label for="orderNotes" class="field">Special Notes:</label>
-                    <textarea name="orderNotes" >@Request.Form["orderNotes"]</textarea>
-                </p>
+                </select>
+                @Html.ValidationMessage("material")
+            </p>
+            <p>
+                <label for="Rush" class="field">I want my order to arrive:</label>
+                <select name="rush" value="@Request.Form["Rush"]">
+                    <option value="3" @day3>Super fast! (3 Day Rush)</option>
+                    <option value="5" @day5>Fast! (5 Day Rush)</option>
+                    <option value="7" @day7>Soon (7 Day Rush)</option>
+                    <option value="14" @day14>No Rush (14 Days)</option>
+                </select>
+                @Html.ValidationMessage("rush")
+            </p>
+            <p>
+                <label for="orderNotes" class="field">Special Notes:</label>
+                <textarea name="orderNotes" maxlength="100">@Request.Form["orderNotes"]</textarea>
+            </p>
 
-                <p><input type="submit" name="getEstimate" value="Get Estimate"/></p>
-            </fieldset>
-            <fieldset name="priceEstimate" class="rightColumn @visibility">
-                <legend>Estimated Cost</legend>
-                <table>
-                    <tr>
-                        <td>Order Name</td>
-                        <td>@customer</td>
-                    </tr>
-                    <tr>
-                        <td>Desk Size of @width" x @length"</td>
-                        <td>$@areaEstimate</td>
-                    </tr>
-                    <tr>
-                        <td>@drawer Drawers</td>
-                        <td>$@drawerEstimate</td>
-                    </tr>
-                    <tr>
-                        <td>@material Surface Material:</td>
-                        <td>$@materialEstimate</td>
-                    </tr>
-                    <tr>
-                        <td>@rush Day Delivery:</td>
-                        <td>$@rushEstimate</td>
-                    </tr>
-                    <tr>
-                        <td>Total Cost</td>
-                        <td>$@deskEstimate</td>
-                    </tr>
-                </table>
+            <p><input type="submit" name="getEstimate" value="Get Estimate" /></p>
+        </fieldset>
+        <fieldset name="priceEstimate" class="rightColumn @visibility">
+            <legend>Estimated Cost</legend>
+            <table>
+                <tr>
+                    <td>Order Name</td>
+                    <td>@customer</td>
+                </tr>
+                <tr>
+                    <td>Desk Size of @width" x @length"</td>
+                    <td>$@areaEstimate</td>
+                </tr>
+                <tr>
+                    <td>@drawer Drawers</td>
+                    <td>$@drawerEstimate</td>
+                </tr>
+                <tr>
+                    <td>@material Surface Material:</td>
+                    <td>$@materialEstimate</td>
+                </tr>
+                <tr>
+                    <td>@rush Day Delivery:</td>
+                    <td>$@rushEstimate</td>
+                </tr>
+                <tr>
+                    <td>Total Cost</td>
+                    <td>$@deskEstimate</td>
+                </tr>
+            </table>
             <input type="submit" name="confirmOrder" value="Confirm Order" />
-            </fieldset>
-        </form>
-    
+        </fieldset>
+    </form>
+
     <a href="/orderList">View Customer Orders</a>
 </section>

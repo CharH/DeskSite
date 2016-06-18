@@ -11,17 +11,12 @@
             password = Request.Form["password"];
             if (WebSecurity.Login(username, password, true))
             {
-                <script type="text/javascript">
-                alert = "Thank you for logging in.";
-                </script>
                 Response.Redirect("~/orderList");
             }
             else
             {
                 errorMessage = "Login was not successful.";
-                <script type="text/javascript">
-                alert = @errorMessage;
-                </script>
+                
 
             }
         }
@@ -60,6 +55,7 @@
                                     <input type="password" tabindex="2" name="password" id="password" placeholder="Password" value="">
                                     <input secure="secure" name="login" type="submit" value="Login"/>
                                 </form>
+                                @errorMessage
                             </div>
                             <div id="loginLinks">
                                 <a href="~/Register">Create an Account</a>
@@ -71,7 +67,7 @@
             </div>
         </div>
         <div id="main">
-            <div>@RenderBody()</div>
+            <div class="blockText">@RenderBody()</div>
 
         </div>
 

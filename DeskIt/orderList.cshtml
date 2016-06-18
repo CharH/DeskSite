@@ -47,9 +47,10 @@
   headerStyle: "Read",
   alternatingRowStyle: "alt",
   columns: grid.Columns(
-  grid.Column(format: @<a href="~/edit_form?id=@item.ID">Edit</a>),
-  grid.Column("Customer"),
-  grid.Column("dateSubmitted"),
+  grid.Column(format: @<a href="~/edit_form?id=@item.ID">View/Edit</a>),
+  grid.Column("dateSubmitted", format: (item) => string.Format("{0:dd-MMM-yyyy}", item.dateSubmitted), header:"Order Placed"),
+  grid.Column("Customer", header:"Name"),
+  grid.Column("Price", format: (item) => new HtmlString("$" + Convert.ToString(item.Price)+".00"), header:"Total"),
   grid.Column(format: @<a href="~/delete_it?id=@item.ID">Delete</a>)
      )
         )

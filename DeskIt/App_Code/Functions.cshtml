@@ -1,6 +1,6 @@
 ﻿
 @functions {
-    string errorMessage;
+        string errorMessage;
 
     public static int CalcTotalCost(int width, int length, int drawers, string surfaceMaterial, int rushOrder)
     {
@@ -111,20 +111,20 @@
     //read in pricing info file and place it into a 2D array
     private static void GetRushOrderInfo(int[,] array)
     {
-        
-            var dataFile = Server.MapPath("~/App_Data/rushOrderPrices.txt");
-            string[] lines = File.ReadAllLines(dataFile);
-            int count = 0;
-            for (int i = 0; i < array.GetLength(0); i++)
+
+        var dataFile = Server.MapPath("~/App_Data/rushOrderPrices.txt");
+        string[] lines = File.ReadAllLines(dataFile);
+        int count = 0;
+        for (int i = 0; i < array.GetLength(0); i++)
+        {
+            for (int j = 0; j < array.GetLength(1); j++)
             {
-                for (int j = 0; j < array.GetLength(1); j++)
-                {
-                    array[i, j] = int.Parse(lines[count]);
-                    count++;
-                }
+                array[i, j] = int.Parse(lines[count]);
+                count++;
             }
+        }
 
 
-        
+
     }
 }
