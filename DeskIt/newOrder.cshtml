@@ -123,7 +123,7 @@
                 </p>
                 <p>
                     <label for="Rush" class="field">I want my order to arrive:</label>
-                    <select name="rush" value="@Request.Form["Rush"]">
+                    <select name="rush" autofocus="@Request.Form["Rush"]">
                         <option value="3">Super fast! (3 Day Rush)</option>
                         <option value="5">Fast! (5 Day Rush)</option>
                         <option value="7">Soon (7 Day Rush)</option>
@@ -133,7 +133,7 @@
                 </p>
                 <p>
                     <label for="orderNotes" class="field">Special Notes:</label>
-                    <textarea name="orderNotes" value="@Request.Form["orderNotes"]"></textarea>
+                    <textarea name="orderNotes" >@Request.Form["orderNotes"]</textarea>
                 </p>
 
                 <p><input type="submit" name="getEstimate" value="Get Estimate"/></p>
